@@ -3,10 +3,11 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using AWCAPI;
 
 namespace Breezewx
 {
-
     public class ApiClient
     {
         private static readonly HttpClient client = new HttpClient();
@@ -27,7 +28,7 @@ namespace Breezewx
             }
         }
 
-        public static async Task<String> GetMetar(string icao)
+        public static async Task<Metar> GetMetar(string icao)
         {
             client.BaseAddress = new Uri("https://aviationweather.gov/api/data/");
             client.DefaultRequestHeaders.Accept.Clear();
@@ -36,7 +37,13 @@ namespace Breezewx
             HttpResponseMessage response =  await client.GetAsync("metar?ids="+icao+"&format=json");
 
             string respBody =  await response.Content.ReadAsStringAsync();
-            return respBody;
+
+            Metar metar = JsonConvert.DeserializeObject<Metar>(respBody);
+
+
+
+
+            return metar;
         }
 
         public static async Task Main(string[] args)
@@ -45,8 +52,8 @@ namespace Breezewx
             //string response = await GetApiResponseAsync(url);
             //Console.WriteLine(response);
 
-            string reps2 = await GetMetar("KSEA");
-            Console.WriteLine(reps2);
+            Metar reps2 = await GetMetar("KSEA");
+            //Console.WriteLine(reps2);
         }
     }
 }
