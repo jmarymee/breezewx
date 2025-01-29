@@ -27,13 +27,13 @@ namespace Breezewx
             }
         }
 
-        public static async Task<String> GetMetar()
+        public static async Task<String> GetMetar(string icao)
         {
             client.BaseAddress = new Uri("https://aviationweather.gov/api/data/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Breezewx");
-            HttpResponseMessage response =  await client.GetAsync("metar?ids=KSEA&format=json");
+            HttpResponseMessage response =  await client.GetAsync("metar?ids="+icao+"&format=json");
 
             string respBody =  await response.Content.ReadAsStringAsync();
             return respBody;
@@ -45,7 +45,7 @@ namespace Breezewx
             //string response = await GetApiResponseAsync(url);
             //Console.WriteLine(response);
 
-            string reps2 = await GetMetar();
+            string reps2 = await GetMetar("KSEA");
             Console.WriteLine(reps2);
         }
     }
